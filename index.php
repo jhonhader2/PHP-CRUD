@@ -16,3 +16,14 @@ $usuario = new Usuario($primer_nombre, $segundo_nombre, $primer_apellido, $segun
 
 $resultado = $usuario->crearUsuario();
 
+$usuarios = $usuario->listarUsuarios();
+
+foreach ($usuarios as $usuario) {
+    echo "ID: " . $usuario['id'] . "\n";
+    echo "Nombre: " . $usuario['primer_nombre'] . " " . $usuario['segundo_nombre'] . "\n";
+    echo "Apellido: " . $usuario['primer_apellido'] . " " . $usuario['segundo_apellido'] . "\n";
+    echo "Fecha de Nacimiento: " . $usuario['fecha_nacimiento'] . "\n";
+    echo "Teléfono: " . $usuario['telefono'] . "\n";
+    echo "Correo: " . $usuario['correo'] . "\n";
+    echo "Dirección: " . $usuario['direccion'] . "\n\n";
+}
