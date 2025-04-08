@@ -130,4 +130,63 @@ class Usuario
             return "Error: " . $e->getMessage();
         }
     }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getPrimerNombre(): string
+    {
+        return $this->primer_nombre;
+    }
+
+    public function getSegundoNombre(): string
+    {
+        return $this->segundo_nombre;
+    }
+
+    public function getPrimerApellido(): string
+    {
+        return $this->primer_apellido;
+    }
+
+    public function getSegundoApellido(): string
+    {
+        return $this->segundo_apellido;
+    }
+
+    public function getFechaNacimiento(): string
+    {
+        return $this->fecha_nacimiento;
+    }
+
+    public function getTelefono(): string
+    {
+        return $this->telefono;
+    }
+
+    public function getCorreo(): string
+    {
+        return $this->correo;
+    }
+
+    public function getDireccion(): string
+    {
+        return $this->direccion;
+    }
+
+    public function getEdad(): int
+    {
+        $fechaNacimiento = new DateTime($this->fecha_nacimiento);
+        $fechaActual = new DateTime();
+
+        return $fechaActual->diff($fechaNacimiento)->y;
+    }
+
+    // Nuevo método para asignar el ID
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
 }

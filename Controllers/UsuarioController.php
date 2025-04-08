@@ -2,124 +2,121 @@
 require_once 'Models/Usuario.php';
 require_once 'Views/UsuarioView.php';
 
-/**
- * Función para obtener los datos de un usuario.
- */
-function obtenerDatosUsuario(): array
+class UsuarioController
 {
-    $campos = [
-        'primer_nombre'    => 'primer nombre',
-        'segundo_nombre'   => 'segundo nombre',
-        'primer_apellido'  => 'primer apellido',
-        'segundo_apellido' => 'segundo apellido',
-        'fecha_nacimiento' => 'fecha de nacimiento (YYYY-MM-DD)',
-        'telefono'         => 'número de teléfono',
-        'correo'           => 'correo electrónico',
-        'direccion'        => 'dirección',
-    ];
-    $datos = [];
-    foreach ($campos as $clave => $mensaje) {
-        $datos[$clave] = readline("Ingrese el $mensaje: ");
-    }
-    return $datos;
-}
+    private UsuarioView $vista;
 
-/**
- * Función para mostrar un mensaje al usuario.
- */
-function imprimirUsuario(array $usuario): void
-{
-    echo "\nID: " . $usuario['id'] . "\n";
-    echo "Nombre: " . $usuario['primer_nombre'] . " " . $usuario['segundo_nombre'] . "\n";
-    echo "Apellido: " . $usuario['primer_apellido'] . " " . $usuario['segundo_apellido'] . "\n";
-    echo "Fecha de Nacimiento: " . $usuario['fecha_nacimiento'] . "\n";
-    echo "Teléfono: " . $usuario['telefono'] . "\n";
-    echo "Correo: " . $usuario['correo'] . "\n";
-    echo "Dirección: " . $usuario['direccion'] . "\n";
-}
-
-/**
- * Controlador para crear un nuevo usuario.
- */
-function crearNuevoUsuario(): void
-{
-    // Se solicita la información a través de la vista
-    $datos = solicitarDatosUsuario();
-    $usuario = new Usuario(
-        $datos['primer_nombre'],
-        $datos['segundo_nombre'],
-        $datos['primer_apellido'],
-        $datos['segundo_apellido'],
-        $datos['fecha_nacimiento'],
-        $datos['telefono'],
-        $datos['correo'],
-        $datos['direccion']
-    );
-
-    $resultado = $usuario->crearUsuario();
-    mostrarMensaje("\nID del nuevo usuario: " . $resultado . "\n");
-}
-
-/**
- * Controlador para listar los usuarios.
- */
-function listarUsuarios(): void
-{
-    $usuario = new Usuario();
-    $usuarios = $usuario->listarUsuarios();
-    if (empty($usuarios)) {
-        mostrarMensaje("\nNo se encontraron usuarios.\n");
-        return;
-    }
-    foreach ($usuarios as $u) {
-        mostrarUsuario($u);
-    }
-}
-
-/**
- * Controlador para modificar un usuario.
- */
-function modificarUsuario(): void
-{
-    $id = solicitarEntrada("Ingrese el ID del usuario a modificar: ");
-    $usuario = new Usuario();
-    $datosUsuario = $usuario->obtenerUsuario($id);
-
-    if (empty($datosUsuario)) {
-        mostrarMensaje("\nNo se encontró el usuario con ID: $id\n");
-        return;
+    public function __construct()
+    {
+        $this->vista = new UsuarioView();
     }
 
-    // Mostrar información actual del usuario
-    mostrarUsuario($datosUsuario);
-
-    // Solicitar nuevos datos
-    $datos = obtenerDatosUsuario();
-    $datos['id'] = $id; // Se incluye el ID en los datos para actualizar correctamente
-
-    $resultado = $usuario->actualizarUsuario($datos);
-
-    if ($resultado === true) {
-        mostrarMensaje("\nUsuario actualizado con éxito.\n");
-        $usuarioActualizado = $usuario->obtenerUsuario($id);
-        mostrarUsuario($usuarioActualizado);
-    } else {
-        mostrarMensaje("\nError al actualizar usuario: " . $resultado . "\n");
+    public function crearNuevoUsuario(): void
+    {
+        $datos = $this->vista->solicitarDatosUsuario();
+        $usuario = new Usuario(
+            $datos['primer_nombre'],
+            $datos['segundo_nombre'],
+            $datos['primer_apellido'],
+            $datos['segundo_apellido'],
+            $datos['fecha_nacimiento'],
+            $datos['telefono'],
+            $datos['correo'],
+            $datos['direccion']
+        );
+        $resultado = $usuario->crearUsuario();
+        $this->vista->mostrarMensaje("\nID del nuevo usuario: " . $resultado . "\n");
     }
-}
 
-/**
- * Controlador para eliminar un usuario.
- */
-function eliminarUsuario(): void
-{
-    $id = solicitarEntrada("Ingrese el ID del usuario a eliminar: ");
-    $usuario = new Usuario();
-    $resultado = $usuario->eliminarUsuario($id);
+    public function listarUsuarios(): void
+    {
+        $usuarioTemp = new Usuario();
+        $usuariosArray = $usuarioTemp->listarUsuarios();
 
-    if ($resultado === true) {
-        mostrarMensaje("\nUsuario eliminado con éxito.\n");
-    } else {
-        mostrarMensaje("\nError al eliminar usuario: " . $resultado . "\n");
+        if (empty($usuariosArray)) {
+            $this->vista->mostrarMensaje("\nNo se encontraron usuarios.\n");
+            return;
+        }
+
+        foreach ($usuariosArray as $u) {
+            $usuario = new Usuario(
+                $u['primer_nombre'],
+                $u['segundo_nombre'],
+                $u['primer_apellido'],
+                $u['segundo_apellido'],
+                $u['fecha_nacimiento'],
+                $u['telefono'],
+                $u['correo'],
+                $u['direccion']
+            );
+            $usuario->setId($u['id']);
+            $this->vista->mostrarUsuario($usuario);
+        }
+    }
+
+    public function modificarUsuario(): void
+    {
+        $id = $this->vista->solicitarEntrada("Ingrese el ID del usuario a modificar: ");
+        $usuarioTemp = new Usuario();
+        $datosUsuario = $usuarioTemp->obtenerUsuario($id);
+
+        if (empty($datosUsuario)) {
+            $this->vista->mostrarMensaje("\nNo se encontró el usuario con ID: $id\n");
+            return;
+        }
+
+        // Convertir el array obtenido a un objeto Usuario
+        $usuario = new Usuario(
+            $datosUsuario['primer_nombre'],
+            $datosUsuario['segundo_nombre'],
+            $datosUsuario['primer_apellido'],
+            $datosUsuario['segundo_apellido'],
+            $datosUsuario['fecha_nacimiento'],
+            $datosUsuario['telefono'],
+            $datosUsuario['correo'],
+            $datosUsuario['direccion']
+        );
+        $usuario->setId($datosUsuario['id']);
+
+        // Mostrar la información actual del usuario
+        $this->vista->mostrarUsuario($usuario);
+
+        // Solicitar nuevos datos
+        $datos = $this->vista->solicitarDatosUsuario();
+        $datos['id'] = $id; // se incluye el ID en los datos para la actualización
+
+        $resultado = $usuarioTemp->actualizarUsuario($datos);
+
+        if ($resultado === true) {
+            $this->vista->mostrarMensaje("\nUsuario actualizado con éxito.\n");
+            $datosUsuarioActualizado = $usuarioTemp->obtenerUsuario($id);
+            $usuarioActualizado = new Usuario(
+                $datosUsuarioActualizado['primer_nombre'],
+                $datosUsuarioActualizado['segundo_nombre'],
+                $datosUsuarioActualizado['primer_apellido'],
+                $datosUsuarioActualizado['segundo_apellido'],
+                $datosUsuarioActualizado['fecha_nacimiento'],
+                $datosUsuarioActualizado['telefono'],
+                $datosUsuarioActualizado['correo'],
+                $datosUsuarioActualizado['direccion']
+            );
+            $usuarioActualizado->setId($datosUsuarioActualizado['id']);
+            $this->vista->mostrarUsuario($usuarioActualizado);
+        } else {
+            $this->vista->mostrarMensaje("\nError al actualizar usuario: " . $resultado . "\n");
+        }
+    }
+
+    public function eliminarUsuario(): void
+    {
+        $id = $this->vista->solicitarEntrada("Ingrese el ID del usuario a eliminar: ");
+        $usuario = new Usuario();
+        $resultado = $usuario->eliminarUsuario($id);
+
+        if ($resultado === true) {
+            $this->vista->mostrarMensaje("\nUsuario eliminado con éxito.\n");
+        } else {
+            $this->vista->mostrarMensaje("\nError al eliminar usuario: " . $resultado . "\n");
+        }
     }
 }

@@ -1,72 +1,54 @@
 <?php
 
-/**
- * Muestra el menú de opciones.
- */
-function mostrarMenu(): void
+class UsuarioView
 {
-    echo "\n----- Menú de Opciones -----\n";
-    echo "1. Crear Usuario\n";
-    echo "2. Listar Usuarios\n";
-    echo "3. Modificar Usuario\n";
-    echo "4. Eliminar Usuario\n";
-    echo "5. Salir\n";
-}
-
-/**
- * Solicita una entrada al usuario con un mensaje.
- */
-function solicitarEntrada(string $mensaje): string
-{
-    return readline($mensaje);
-}
-
-/**
- * Solicita los datos de un usuario.
- */
-function solicitarDatosUsuario(): array
-{
-    $campos = [
-        'primer_nombre'    => 'Ingrese el primer nombre: ',
-        'segundo_nombre'   => 'Ingrese el segundo nombre: ',
-        'primer_apellido'  => 'Ingrese el primer apellido: ',
-        'segundo_apellido' => 'Ingrese el segundo apellido: ',
-        'fecha_nacimiento' => 'Ingrese la fecha de nacimiento (YYYY-MM-DD): ',
-        'telefono'         => 'Ingrese el número de teléfono: ',
-        'correo'           => 'Ingrese el correo electrónico: ',
-        'direccion'        => 'Ingrese la dirección: ',
-    ];
-    $datos = [];
-    foreach ($campos as $clave => $mensaje) {
-        $datos[$clave] = solicitarEntrada($mensaje);
+    public function mostrarMenu(): void
+    {
+        echo "\n----- Menú de Opciones -----\n";
+        echo "1. Crear Usuario\n";
+        echo "2. Listar Usuarios\n";
+        echo "3. Modificar Usuario\n";
+        echo "4. Eliminar Usuario\n";
+        echo "5. Salir\n";
     }
-    return $datos;
-}
 
-/**
- * Imprime la información de un usuario.
- */
-function mostrarUsuario(array $usuario): void
-{
-    echo "\nID: " . $usuario['id'] . "\n";
-    echo "Nombre: " . $usuario['primer_nombre'] . " " . $usuario['segundo_nombre'] . "\n";
-    echo "Apellido: " . $usuario['primer_apellido'] . " " . $usuario['segundo_apellido'] . "\n";
+    public function solicitarEntrada(string $mensaje): string
+    {
+        return readline($mensaje);
+    }
 
-    // Calcular la edad a partir de la fecha de nacimiento
-    $fechaNacimiento = new DateTime($usuario['fecha_nacimiento']);
-    $fechaActual = new DateTime();
-    $edad = $fechaActual->diff($fechaNacimiento)->y;
-    echo "Edad: " . $edad . " Años\n";
+    public function solicitarDatosUsuario(): array
+    {
+        $campos = [
+            'primer_nombre'    => 'Ingrese el primer nombre: ',
+            'segundo_nombre'   => 'Ingrese el segundo nombre: ',
+            'primer_apellido'  => 'Ingrese el primer apellido: ',
+            'segundo_apellido' => 'Ingrese el segundo apellido: ',
+            'fecha_nacimiento' => 'Ingrese la fecha de nacimiento (YYYY-MM-DD): ',
+            'telefono'         => 'Ingrese el número de teléfono: ',
+            'correo'           => 'Ingrese el correo electrónico: ',
+            'direccion'        => 'Ingrese la dirección: ',
+        ];
+        $datos = [];
+        foreach ($campos as $clave => $mensaje) {
+            $datos[$clave] = $this->solicitarEntrada($mensaje);
+        }
+        return $datos;
+    }
 
-    echo "Teléfono: " . $usuario['telefono'] . "\n";
-    echo "Correo: " . $usuario['correo'] . "\n";
-    echo "Dirección: " . $usuario['direccion'] . "\n";
-}
+    public function mostrarUsuario(Usuario $usuario): void
+    {
+        echo "\nID: " . $usuario->getId() . "\n";
+        echo "Nombre: " . $usuario->getPrimerNombre() . " " . $usuario->getSegundoNombre() . "\n";
+        echo "Apellido: " . $usuario->getPrimerApellido() . " " . $usuario->getSegundoApellido() . "\n";
+        echo "Edad: " . $usuario->getEdad() . " Años\n";
+        echo "Teléfono: " . $usuario->getTelefono() . "\n";
+        echo "Correo: " . $usuario->getCorreo() . "\n";
+        echo "Dirección: " . $usuario->getDireccion() . "\n";
+    }
 
-/**
- * Muestra un mensaje en pantalla.
- */
-function mostrarMensaje(string $mensaje): void
-{
-    echo $mensaje;
+    public function mostrarMensaje(string $mensaje): void
+    {
+        echo $mensaje;
+    }
 }

@@ -1,29 +1,31 @@
 <?php
 
-require_once 'Models/Usuario.php';
 require_once 'Controllers/UsuarioController.php';
 require_once 'Views/UsuarioView.php';
 
+$controller = new UsuarioController();
+$vista = new UsuarioView();
+
 do {
-    mostrarMenu();
-    $opcion = solicitarEntrada("Seleccione una opción: ");
+    $vista->mostrarMenu();
+    $opcion = $vista->solicitarEntrada("Seleccione una opción: ");
     switch ($opcion) {
         case "1":
-            crearNuevoUsuario();
+            $controller->crearNuevoUsuario();
             break;
         case "2":
-            listarUsuarios();
+            $controller->listarUsuarios();
             break;
         case "3":
-            modificarUsuario();
+            $controller->modificarUsuario();
             break;
         case "4":
-            eliminarUsuario();
+            $controller->eliminarUsuario();
             break;
         case "5":
-            mostrarMensaje("\nSaliendo...\n");
+            $vista->mostrarMensaje("\nSaliendo...\n");
             exit;
         default:
-            mostrarMensaje("\nOpción inválida. Inténtelo de nuevo.\n");
+            $vista->mostrarMensaje("\nOpción inválida. Inténtelo de nuevo.\n");
     }
 } while (true);
