@@ -15,6 +15,13 @@ do {
             listarUsuarios();
             break;
         case "3":
+            modificarUsuario();
+            break;
+        case "4":
+            echo "\nFunción de eliminar usuario aún no implementada.\n";
+            // eliminarUsuario();
+            break;
+        case "5":
             mostrarMensaje("\nSaliendo...\n");
             exit;
         default:

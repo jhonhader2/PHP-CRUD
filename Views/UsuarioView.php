@@ -8,7 +8,9 @@ function mostrarMenu(): void
     echo "\n----- Menú de Opciones -----\n";
     echo "1. Crear Usuario\n";
     echo "2. Listar Usuarios\n";
-    echo "3. Salir\n";
+    echo "3. Modificar Usuario\n";
+    echo "4. Eliminar Usuario\n";
+    echo "5. Salir\n";
 }
 
 /**

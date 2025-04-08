@@ -75,3 +75,35 @@ function listarUsuarios(): void
         mostrarUsuario($u);
     }
 }
+
+/**
+ * Controlador para modificar un usuario.
+ */
+function modificarUsuario(): void
+{
+    $id = solicitarEntrada("Ingrese el ID del usuario a modificar: ");
+    $usuario = new Usuario();
+    $datosUsuario = $usuario->obtenerUsuario($id);
+
+    if (empty($datosUsuario)) {
+        mostrarMensaje("\nNo se encontró el usuario con ID: $id\n");
+        return;
+    }
+
+    // Mostrar información actual del usuario
+    mostrarUsuario($datosUsuario);
+
+    // Solicitar nuevos datos
+    $datos = obtenerDatosUsuario();
+    $datos['id'] = $id; // Se incluye el ID en los datos para actualizar correctamente
+
+    $resultado = $usuario->actualizarUsuario($datos);
+
+    if ($resultado === true) {
+        mostrarMensaje("\nUsuario actualizado con éxito.\n");
+        $usuarioActualizado = $usuario->obtenerUsuario($id);
+        mostrarUsuario($usuarioActualizado);
+    } else {
+        mostrarMensaje("\nError al actualizar usuario: " . $resultado . "\n");
+    }
+}
