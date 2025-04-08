@@ -107,3 +107,19 @@ function modificarUsuario(): void
         mostrarMensaje("\nError al actualizar usuario: " . $resultado . "\n");
     }
 }
+
+/**
+ * Controlador para eliminar un usuario.
+ */
+function eliminarUsuario(): void
+{
+    $id = solicitarEntrada("Ingrese el ID del usuario a eliminar: ");
+    $usuario = new Usuario();
+    $resultado = $usuario->eliminarUsuario($id);
+
+    if ($resultado === true) {
+        mostrarMensaje("\nUsuario eliminado con éxito.\n");
+    } else {
+        mostrarMensaje("\nError al eliminar usuario: " . $resultado . "\n");
+    }
+}

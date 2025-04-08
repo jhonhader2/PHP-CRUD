@@ -120,5 +120,14 @@ class Usuario
     public function eliminarUsuario($id)
     {
         // Lógica para eliminar un usuario
+        $sql = "DELETE FROM usuarios WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        try {
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            return "Error: " . $e->getMessage();
+        }
     }
 }
